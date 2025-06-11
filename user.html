@@ -1,67 +1,73 @@
-<!-- user.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Envoyer un message anonyme</title>
-  <link rel="stylesheet" href="assets/style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAZ MOI - Reçois des messages</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #000; color: white; margin: 0; padding: 20px; }
+    textarea { width: 100%; height: 100px; padding: 10px; font-size: 16px; border-radius: 5px; margin-bottom: 10px; }
+    button { padding: 10px 20px; background: #00FFAB; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    ul { list-style: none; padding: 0; }
+    li { background: #222; margin: 5px 0; padding: 10px; border-radius: 5px; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📩 Envoie un message à <span id="username">???</span></h2>
-    <form id="messageForm">
-      <textarea id="messageInput" placeholder="Écris ton message ici..." required></textarea>
-      <button type="submit">🚀 Envoyer anonymement</button>
-    </form>
-    <p id="status" style="margin-top: 1rem;"></p>
-  </div>
+  <h1>✉️ Envoie un message à <span id="pseudo"></span></h1>
+
+  <form id="messageForm">
+    <textarea id="messageInput" placeholder="Écris ton message ici..." required></textarea>
+    <button type="submit">Envoyer anonymement</button>
+  </form>
+
+  <p id="confirmation"></p>
+
+  <h2>📥 Messages reçus :</h2>
+  <ul id="messageList"></ul>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const user = urlParams.get('u');
-    const usernameSpan = document.getElementById('username');
-    const status = document.getElementById('status');
+    const username = window.location.pathname.split("/u/")[1];
+    document.getElementById("pseudo").textContent = username;
 
-    if (!user) {
-      usernameSpan.textContent = "inconnu 😢";
-      document.getElementById("messageForm").style.display = "none";
-    } else {
-      usernameSpan.textContent = user;
-    }
+    const form = document.getElementById("messageForm");
+    const input = document.getElementById("messageInput");
+    const confirm = document.getElementById("confirmation");
+    const list = document.getElementById("messageList");
 
-    document.getElementById("messageForm").addEventListener("submit", async function (e) {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
-      const message = document.getElementById("messageInput").value.trim();
+      const message = input.value.trim();
       if (!message) return;
 
-      status.textContent = "⏳ Envoi en cours...";
+      const res = await fetch("http://muzansigma.totsuka.web.id:2024/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, message }),
+      });
 
-      try {
-        const res = await fetch("/api/send", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            to: user,
-            message: message
-          })
-        });
-
-        const data = await res.json();
-
-        if (res.ok) {
-          window.location.href = "success.html";
-        } else {
-          status.textContent = "❌ Erreur : " + (data.error || "impossible d’envoyer");
-        }
-      } catch (err) {
-        status.textContent = "❌ Erreur réseau. Réessaie.";
+      const data = await res.json();
+      if (data.success) {
+        confirm.textContent = "✅ Message envoyé !";
+        input.value = "";
+        fetchMessages();
+      } else {
+        confirm.textContent = "❌ Erreur lors de l'envoi.";
       }
     });
+
+    async function fetchMessages() {
+      const res = await fetch(`http://muzansigma.totsuka.web.id:2024/get?username=${username}`);
+      const data = await res.json();
+      list.innerHTML = "";
+      data.messages.forEach(m => {
+        const li = document.createElement("li");
+        li.textContent = m.message;
+        list.appendChild(li);
+      });
+    }
+
+    fetchMessages();
+    setInterval(fetchMessages, 30000);
   </script>
 </body>
 </html>
-
-

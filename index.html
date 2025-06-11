@@ -1,41 +1,33 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <!-- Open Graph meta tags -->
-<meta property="og:title" content="WAZ MOI 👀 | Envoie-moi un message anonyme" />
-<meta property="og:description" content="Envoie des messages anonymes, drôles ou sincères à tes potes. C’est 100% anonyme, stylé et gratuit." />
-<meta property="og:image" content="https://files.catbox.moe/02eg5r.jpg" />
-<meta property="og:url" content="https://wazz-moi.vercel.app" />
-<meta property="og:type" content="website" />
-
-<!-- Twitter card tags -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="WAZ MOI 👀 | Envoie-moi un message anonyme" />
-<meta name="twitter:description" content="Envoie des messages anonymes, drôles ou sincères à tes potes. C’est 100% anonyme, stylé et gratuit." />
-<meta name="twitter:image" content="https://files.catbox.moe/02eg5r.jpg" />
-
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WAZ MOI - Reçois des messages anonymes !</title>
-  <link rel="stylesheet" href="assets/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WAZ MOI - Anonyme</title>
+  <style>
+    body { font-family: 'Segoe UI', sans-serif; background: #111; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+    input, button { padding: 10px; border-radius: 5px; border: none; font-size: 16px; margin: 10px; }
+    input { width: 250px; }
+    button { background-color: #00FFAB; cursor: pointer; }
+    h1 { font-size: 2em; margin-bottom: 0.5em; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1>
-      <span class="logo-text">WAZ MOI</span>
-      <span class="eyes">👀</span>
-    </h1>
-    <p class="subtitle">Reçois des messages anonymes et fun via WhatsApp !</p>
+  <h1>🔒 WAZ MOI</h1>
+  <form id="pseudoForm">
+    <input type="text" id="pseudoInput" placeholder="Choisis ton pseudo..." required />
+    <button type="submit">Créer mon lien</button>
+  </form>
 
-    <form id="pseudoForm">
-      <input type="text" id="pseudoInput" placeholder="Ton pseudo (ex: CrazyDev)" required maxlength="20"/>
-      <button type="submit">🎯 Générer mon lien</button>
-    </form>
-  </div>
-
-  <script src="assets/script.js"></script>
+  <script>
+    const form = document.getElementById("pseudoForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const pseudo = document.getElementById("pseudoInput").value.trim();
+      if (pseudo) {
+        window.location.href = `/u/${pseudo}`;
+      }
+    });
+  </script>
 </body>
 </html>
-
-
