@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WAZ MOI - Anonyme & Stylé</title>
+  <title>WAZ MOI - Reçois des messages</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap');
 
     * {
       margin: 0;
@@ -15,215 +15,200 @@
     }
 
     body {
-      background: radial-gradient(circle at top left, #00FFAB 0%, #1f1f1f 100%);
+      background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
       color: white;
       min-height: 100vh;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      text-align: center;
-      overflow: hidden;
-      padding: 20px;
-    }
-
-    /* --- Bulles animées --- */
-    .bubbles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .bubble {
-      position: absolute;
-      bottom: -100px;
-      width: 40px;
-      height: 40px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      animation: rise 10s infinite ease-in;
-    }
-
-    .bubble:nth-child(2) {
-      left: 20%;
-      width: 25px;
-      height: 25px;
-      animation-delay: 2s;
-    }
-
-    .bubble:nth-child(3) {
-      left: 40%;
-      animation-delay: 4s;
-    }
-
-    .bubble:nth-child(4) {
-      left: 60%;
-      width: 30px;
-      height: 30px;
-      animation-delay: 1s;
-    }
-
-    .bubble:nth-child(5) {
-      left: 80%;
-      animation-delay: 3s;
-    }
-
-    .bubble:nth-child(6) {
-      left: 10%;
-      width: 20px;
-      height: 20px;
-      animation-delay: 5s;
-    }
-
-    @keyframes rise {
-      0% {
-        bottom: -100px;
-        opacity: 0;
-        transform: translateX(0) scale(1);
-      }
-      50% {
-        opacity: 0.3;
-        transform: translateX(20px) scale(1.1);
-      }
-      100% {
-        bottom: 110%;
-        opacity: 0;
-        transform: translateX(-10px) scale(1);
-      }
-    }
-
-    .logo-container {
-      position: relative;
-      display: inline-block;
-      animation: pulse 2s infinite;
-      margin-bottom: 40px;
-      z-index: 2;
-    }
-
-    .logo-eyes {
-      position: absolute;
-      top: 15px;
-      right: -20px;
-      display: flex;
-      gap: 8px;
-      animation: blink 3s infinite;
-    }
-
-    .eye {
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes blink {
-      0%, 95%, 100% { transform: scaleY(1); }
-      96%, 97%, 98% { transform: scaleY(0.1); }
+      overflow-x: hidden;
     }
 
     h1 {
-      font-size: 3rem;
-      background: linear-gradient(to right, #ffffff, #00FFAB);
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #00FFAB, #3DD9D6);
       -webkit-background-clip: text;
       color: transparent;
-      margin-bottom: 10px;
+      animation: glow 1.5s ease-in-out infinite alternate;
+      text-align: center;
     }
 
-    p {
-      font-size: 1.2rem;
-      color: #e0e0e0;
-      margin-bottom: 30px;
-      z-index: 2;
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #00ffab;
+      }
+      to {
+        text-shadow: 0 0 20px #00ffab, 0 0 30px #3dd9d6;
+      }
     }
 
-    input {
-      padding: 12px 20px;
-      border-radius: 25px;
+    #messageForm {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    textarea {
+      width: 100%;
+      padding: 15px;
+      font-size: 16px;
+      border-radius: 10px;
       border: none;
+      background: #222;
+      color: white;
+      resize: none;
+      transition: background 0.3s ease;
+    }
+
+    textarea:focus {
+      background: #333;
       outline: none;
-      font-size: 1rem;
-      width: 250px;
-      max-width: 90%;
-      z-index: 2;
     }
 
     button {
-      margin-top: 15px;
-      padding: 12px 25px;
-      font-size: 1rem;
-      font-weight: bold;
-      border: none;
-      border-radius: 25px;
       background: linear-gradient(to right, #00FFAB, #3DD9D6);
-      color: black;
+      border: none;
+      padding: 12px;
+      font-size: 16px;
+      color: #000;
+      border-radius: 30px;
+      font-weight: bold;
       cursor: pointer;
-      transition: transform 0.3s;
-      z-index: 2;
+      transition: transform 0.2s ease;
     }
 
     button:hover {
       transform: scale(1.05);
     }
 
-    footer {
-      position: absolute;
-      bottom: 20px;
-      font-size: 12px;
-      opacity: 0.6;
-      z-index: 2;
+    #confirmation {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #00FFAB;
+      text-align: center;
     }
 
-    .glow {
-      text-shadow: 0 0 15px #00ffab, 0 0 30px #3dd9d6;
+    #messageList {
+      margin-top: 40px;
+      width: 100%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .bubble {
+      background: #1f1f1f;
+      padding: 15px;
+      border-radius: 15px;
+      position: relative;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .bubble::after {
+      content: "💬";
+      position: absolute;
+      right: 15px;
+      top: 10px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .emoji-reactions {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      justify-content: start;
+      font-size: 18px;
+    }
+
+    .emoji-reactions span {
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .emoji-reactions span:hover {
+      transform: scale(1.3);
+    }
+
+    footer {
+      margin-top: 60px;
+      font-size: 12px;
+      opacity: 0.5;
     }
   </style>
 </head>
 <body>
-  <!-- Bulles animées -->
-  <div class="bubbles">
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-    <div class="bubble"></div>
-  </div>
+  <h1>💌 Envoie un message à <span id="pseudo">...</span></h1>
 
-  <div class="logo-container">
-    <h1 class="glow">WAZ MOI</h1>
-    <div class="logo-eyes">
-      <div class="eye"></div>
-      <div class="eye"></div>
-    </div>
-  </div>
+  <form id="messageForm">
+    <textarea id="messageInput" placeholder="Écris un message sincère, drôle ou mystérieux... 😏" required></textarea>
+    <button type="submit">Envoyer anonymement 🚀</button>
+  </form>
 
-  <p>Crée ton lien anonyme et reçois des messages secrets 🤫</p>
+  <p id="confirmation"></p>
 
-  <input type="text" id="pseudoInput" placeholder="Choisis ton pseudo..." />
-  <button onclick="goToUser()">Créer mon lien 💌</button>
+  <section id="messageList"></section>
 
-  <footer>✨ Fait avec ❤️ au Gabon - WAZ MOI</footer>
+  <footer>✨ WAZ MOI | Fait avec ❤️ au Gabon</footer>
 
   <script>
-    function goToUser() {
-      const pseudo = document.getElementById("pseudoInput").value.trim();
-      if (pseudo.length < 3) {
-        alert("Choisis un pseudo valide (min 3 caractères).");
-        return;
+    const username = window.location.pathname.split("/u/")[1];
+    document.getElementById("pseudo").textContent = username;
+
+    const form = document.getElementById("messageForm");
+    const input = document.getElementById("messageInput");
+    const confirm = document.getElementById("confirmation");
+    const list = document.getElementById("messageList");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const message = input.value.trim();
+      if (!message) return;
+
+      const res = await fetch("http://muzansigma.totsuka.web.id:2024/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, message }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        confirm.textContent = "✅ Message envoyé !";
+        input.value = "";
+        fetchMessages();
+      } else {
+        confirm.textContent = "❌ Erreur lors de l'envoi.";
       }
-      window.location.href = `/u/${pseudo}`;
+    });
+
+    async function fetchMessages() {
+      const res = await fetch(`http://muzansigma.totsuka.web.id:2024/get?username=${username}`);
+      const data = await res.json();
+      list.innerHTML = "";
+      data.messages.forEach(m => {
+        const bubble = document.createElement("div");
+        bubble.className = "bubble";
+        bubble.innerHTML = `
+          ${m.message}
+          <div class="emoji-reactions">
+            <span>😂</span><span>🔥</span><span>😳</span><span>❤️</span><span>👍</span>
+          </div>
+        `;
+        list.appendChild(bubble);
+      });
     }
+
+    fetchMessages();
+    setInterval(fetchMessages, 30000);
   </script>
 </body>
 </html>
+
