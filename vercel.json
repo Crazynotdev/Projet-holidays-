@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/u/:pseudo", "destination": "/user.html" }
+  ]
+}
