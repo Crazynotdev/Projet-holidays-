@@ -6,14 +6,7 @@
   <title>WAZ MOI - Reçois des messages</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&display=swap');
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Outfit', sans-serif;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
     body {
       background: linear-gradient(135deg, #0f0f0f, #1a1a1a);
       color: white;
@@ -24,7 +17,6 @@
       align-items: center;
       overflow-x: hidden;
     }
-
     h1 {
       font-size: 2rem;
       margin-bottom: 20px;
@@ -34,16 +26,10 @@
       animation: glow 1.5s ease-in-out infinite alternate;
       text-align: center;
     }
-
     @keyframes glow {
-      from {
-        text-shadow: 0 0 10px #00ffab;
-      }
-      to {
-        text-shadow: 0 0 20px #00ffab, 0 0 30px #3dd9d6;
-      }
+      from { text-shadow: 0 0 10px #00ffab; }
+      to { text-shadow: 0 0 20px #00ffab, 0 0 30px #3dd9d6; }
     }
-
     #messageForm {
       display: flex;
       flex-direction: column;
@@ -51,7 +37,6 @@
       width: 100%;
       max-width: 400px;
     }
-
     textarea {
       width: 100%;
       padding: 15px;
@@ -63,12 +48,10 @@
       resize: none;
       transition: background 0.3s ease;
     }
-
     textarea:focus {
       background: #333;
       outline: none;
     }
-
     button {
       background: linear-gradient(to right, #00FFAB, #3DD9D6);
       border: none;
@@ -80,18 +63,15 @@
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-
     button:hover {
       transform: scale(1.05);
     }
-
     #confirmation {
       margin-top: 15px;
       font-weight: bold;
       color: #00FFAB;
       text-align: center;
     }
-
     #messageList {
       margin-top: 40px;
       width: 100%;
@@ -100,7 +80,6 @@
       flex-direction: column;
       gap: 10px;
     }
-
     .bubble {
       background: #1f1f1f;
       padding: 15px;
@@ -108,19 +87,16 @@
       position: relative;
       animation: fadeIn 0.6s ease;
     }
-
     .bubble::after {
       content: "💬";
       position: absolute;
       right: 15px;
       top: 10px;
     }
-
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
     .emoji-reactions {
       margin-top: 10px;
       display: flex;
@@ -128,16 +104,13 @@
       justify-content: start;
       font-size: 18px;
     }
-
     .emoji-reactions span {
       cursor: pointer;
       transition: transform 0.2s;
     }
-
     .emoji-reactions span:hover {
       transform: scale(1.3);
     }
-
     footer {
       margin-top: 60px;
       font-size: 12px;
@@ -154,14 +127,13 @@
   </form>
 
   <p id="confirmation"></p>
-
   <section id="messageList"></section>
-
   <footer>✨ WAZ MOI | Fait avec ❤️ au Gabon</footer>
 
   <script>
-    const username = window.location.pathname.split("/u/")[1];
-    document.getElementById("pseudo").textContent = username;
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("pseudo");
+    document.getElementById("pseudo").textContent = username || "inconnu";
 
     const form = document.getElementById("messageForm");
     const input = document.getElementById("messageInput");
@@ -171,39 +143,51 @@
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const message = input.value.trim();
-      if (!message) return;
+      if (!message || !username) {
+        confirm.textContent = "❌ Erreur : pseudo ou message manquant.";
+        return;
+      }
 
-      const res = await fetch("http://muzansigma.totsuka.web.id:2024/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, message }),
-      });
+      try {
+        const res = await fetch("http://muzansigma.totsuka.web.id:2024/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, message }),
+        });
 
-      const data = await res.json();
-      if (data.success) {
-        confirm.textContent = "✅ Message envoyé !";
-        input.value = "";
-        fetchMessages();
-      } else {
-        confirm.textContent = "❌ Erreur lors de l'envoi.";
+        const data = await res.json();
+        if (data.success) {
+          confirm.textContent = "✅ Message envoyé !";
+          input.value = "";
+          fetchMessages();
+        } else {
+          confirm.textContent = "❌ Erreur lors de l'envoi.";
+        }
+      } catch (err) {
+        confirm.textContent = "❌ Serveur injoignable.";
       }
     });
 
     async function fetchMessages() {
-      const res = await fetch(`http://muzansigma.totsuka.web.id:2024/get?username=${username}`);
-      const data = await res.json();
-      list.innerHTML = "";
-      data.messages.forEach(m => {
-        const bubble = document.createElement("div");
-        bubble.className = "bubble";
-        bubble.innerHTML = `
-          ${m.message}
-          <div class="emoji-reactions">
-            <span>😂</span><span>🔥</span><span>😳</span><span>❤️</span><span>👍</span>
-          </div>
-        `;
-        list.appendChild(bubble);
-      });
+      if (!username) return;
+      try {
+        const res = await fetch(`http://muzansigma.totsuka.web.id:2024/get?username=${username}`);
+        const data = await res.json();
+        list.innerHTML = "";
+        data.messages.forEach(m => {
+          const bubble = document.createElement("div");
+          bubble.className = "bubble";
+          bubble.innerHTML = `
+            ${m.message}
+            <div class="emoji-reactions">
+              <span>😂</span><span>🔥</span><span>😳</span><span>❤️</span><span>👍</span>
+            </div>
+          `;
+          list.appendChild(bubble);
+        });
+      } catch (err) {
+        list.innerHTML = "<p>Impossible de charger les messages.</p>";
+      }
     }
 
     fetchMessages();
