@@ -1,33 +1,144 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAZ MOI - Anonyme</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WAZ MOI - Anonyme & Stylé</title>
   <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #111; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-    input, button { padding: 10px; border-radius: 5px; border: none; font-size: 16px; margin: 10px; }
-    input { width: 250px; }
-    button { background-color: #00FFAB; cursor: pointer; }
-    h1 { font-size: 2em; margin-bottom: 0.5em; }
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top left, #00FFAB 0%, #1f1f1f 100%);
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+      padding: 20px;
+    }
+
+    .logo-container {
+      position: relative;
+      display: inline-block;
+      animation: pulse 2s infinite;
+      margin-bottom: 40px;
+    }
+
+    .logo-eyes {
+      position: absolute;
+      top: 15px;
+      right: -20px;
+      display: flex;
+      gap: 8px;
+      animation: blink 3s infinite;
+    }
+
+    .eye {
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes blink {
+      0%, 95%, 100% { transform: scaleY(1); }
+      96%, 97%, 98% { transform: scaleY(0.1); }
+    }
+
+    h1 {
+      font-size: 3rem;
+      background: linear-gradient(to right, #ffffff, #00FFAB);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #e0e0e0;
+      margin-bottom: 30px;
+    }
+
+    input {
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      width: 250px;
+      max-width: 90%;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 25px;
+      background: linear-gradient(to right, #00FFAB, #3DD9D6);
+      color: black;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+    }
+
+    footer {
+      position: absolute;
+      bottom: 20px;
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    .glow {
+      text-shadow: 0 0 15px #00ffab, 0 0 30px #3dd9d6;
+    }
   </style>
 </head>
 <body>
-  <h1>🔒 WAZ MOI</h1>
-  <form id="pseudoForm">
-    <input type="text" id="pseudoInput" placeholder="Choisis ton pseudo..." required />
-    <button type="submit">Créer mon lien</button>
-  </form>
+  <div class="logo-container">
+    <h1 class="glow">WAZ MOI</h1>
+    <div class="logo-eyes">
+      <div class="eye"></div>
+      <div class="eye"></div>
+    </div>
+  </div>
+
+  <p>Crée ton lien anonyme et reçois des messages secrets 🤫</p>
+
+  <input type="text" id="pseudoInput" placeholder="Choisis ton pseudo..." />
+  <button onclick="goToUser()">Créer mon lien 💌</button>
+
+  <footer>Fait avec ❤️ au Gabon - WAZ MOI</footer>
 
   <script>
-    const form = document.getElementById("pseudoForm");
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
+    function goToUser() {
       const pseudo = document.getElementById("pseudoInput").value.trim();
-      if (pseudo) {
-        window.location.href = `/u/${pseudo}`;
+      if (pseudo.length < 3) {
+        alert("Choisis un pseudo valide (min 3 caractères).");
+        return;
       }
-    });
+      window.location.href = `/u/${pseudo}`;
+    }
   </script>
 </body>
 </html>
